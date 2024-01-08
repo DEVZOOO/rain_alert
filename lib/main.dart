@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,34 +43,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int _selectedIndex = 0; // 네비게이션 인덱스
 
+  // 페이지들
+  final List<Widget> _pages = [LocationPage(), TownPage(), InfoPage()];
+  final pageController = PageController();
+
+  // 페이지변경
+  void pageChangeHandler(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    Widget page = const Placeholder();  // TODO - error 처리
-    switch (_selectedIndex) {
-      case 0:
-        page = LocationPage();
-        break;
-      case 1:
-        page = TownPage();
-        break;
-      case 2:
-        page = Placeholder();
-        break;
-    }
 
     return LayoutBuilder(
       builder: (context, containers) {
         return Scaffold(
           backgroundColor: theme.colorScheme.tertiaryContainer,
-          body: SafeArea(child: page),
+          body: SafeArea(
+            child: PageView(  // 위젯 상태값 유지 위함
+              controller: pageController,
+              onPageChanged: pageChangeHandler,
+              physics: const NeverScrollableScrollPhysics(),  // 스와이프하면 페이지 바뀌는거 방지
+              children: _pages,
+            ),
+          ),
           bottomNavigationBar: NavigationBar(
             selectedIndex: _selectedIndex,
             onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
+              pageController.jumpToPage(index);
             },
             destinations: const [
               NavigationDestination(
