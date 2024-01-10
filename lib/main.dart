@@ -1,12 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import '/src/models/import.dart';
 import '/src/screens/import.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: 'env/.env');
   runApp(const MyApp());
 }
 
