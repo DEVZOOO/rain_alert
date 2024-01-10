@@ -6,6 +6,8 @@ class EnvConfig {
   final String name = dotenv.get('NAME');
   /// 버전(major.minor.patch)
   final String version = dotenv.get('VERSION');
+  /// 이메일 주소
+  final String emailAddress = dotenv.get('EMAIL_ADDRESS');
   /// github 링크
   final String githubUrl = dotenv.get('GITHUB_URL');
 
