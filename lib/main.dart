@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-import '/src/models/import.dart';
+import '/src/providers/import.dart';
 import '/src/screens/import.dart';
 
 Future main() async {
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return LayoutBuilder(
       builder: (context, containers) {
         return Scaffold(
-          backgroundColor: theme.colorScheme.tertiaryContainer,
+          backgroundColor: theme.navigationBarTheme.backgroundColor,
           body: SafeArea(
             child: PageView(  // 위젯 상태값 유지 위함
               controller: pageController,
