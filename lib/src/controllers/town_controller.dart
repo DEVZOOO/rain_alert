@@ -11,8 +11,15 @@ class TownController {
     return _townService.getTownList(level, parentCode);
   }
 
+  /*
   /// 날씨리스트 조회
   Future<List<WeatherViewModel>> getWeatherList(String code) {
     return code == '' ? Future(() => []) : _townService.getWeatherList(code);
+  }
+  */
+
+  /// 날씨리스트 조회
+  Future<List<WeatherViewModel>> getWeatherList(TownModel? townInfo) {
+    return townInfo == null ? Future(() => []) : _townService.getWeatherList(townInfo);
   }
 }
