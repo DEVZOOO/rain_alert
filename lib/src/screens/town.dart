@@ -17,16 +17,16 @@ class TownPage extends StatefulWidget {
 class _TownPageState extends State<TownPage>
   with AutomaticKeepAliveClientMixin {  // 상태값 유지
 
-  /// 선택지역코드
-  late String _code;
+  final TownController _townController = TownController();
+  
+  /// 선택한 지역정보
+  TownModel? _townInfo;
 
   /// 최상위 지역 목록(시,도)
   late List<TownModel> _topLevelTownList;
 
-  /// 지역별 날씨 리스트 - API 호출 덜하기 위해서
-  final Map<String, List<WeatherViewModel>> _weatherList = {};
-
-  late final TownController _townController;
+  /// 지역별 날씨 리스트 {'code': []} - API 호출 덜하기 위함
+  late final Map<String, List<WeatherViewModel>> _weatherList;
 
   
   // 상태값 유지 여부
@@ -38,35 +38,44 @@ class _TownPageState extends State<TownPage>
   @override
   void initState() {
     super.initState();
-    _townController = TownController();
-
-    initWidgetState();
+    _initWidgetState();
   }
 
   /// widget state 초기화 작업
-  void initWidgetState() {
-    final List<TownModel> townList = context.read<StorageTownProvider>().townList;
-    _code = townList.isEmpty ? '' : townList[0].code;
+  void _initWidgetState() {
+    // final List<TownModel> townList = context.watch<StorageTownProvider>().townList;
+    // _townInfo = townList.isEmpty ? null : townList[0];
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      List<TownModel> list = context.read<StorageTownProvider>().townList;
+      if (list.isNotEmpty) {
+        setState(() {
+           _townInfo = list[0];
+        });
+      }
+    });
 
     // level1 초기화
     _townController.getTownList(1, null).then((value) => _topLevelTownList = value);
+
+    _weatherList = {};
   }
 
   /// 날씨리스트 API 조회
   Future<List<WeatherViewModel>> _getWeatherList() async {
-      /*
-      List<WeatherViewModel> list = await Future.delayed(const Duration(seconds: 2), () {
+      //*
+      List<WeatherViewModel> list = await Future.delayed(const Duration(seconds: 5), () {
         return [
           WeatherViewModel(date: '20240109', time: '1000'),
         ];
       });
-      */
-      List<WeatherViewModel> list = await _townController.getWeatherList(_code);
+      //*/
+      // List<WeatherViewModel> list = await _townController.getWeatherList(_townInfo);
       return list;
   }
 
   /// 지역 추가 handler, 추가 모달 오픈
-  void openTownSelectModal() {
+  void _openTownSelectModal() {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -90,11 +99,14 @@ class _TownPageState extends State<TownPage>
     final theme = Theme.of(context);
 
     late Widget listWidget;
+
+    String code = _townInfo != null ? _townInfo!.code : '';
+
     // 최초 실행일때만 API call
-    if (_weatherList.containsKey(_code)) {
+    if (_weatherList.containsKey(code)) {
       listWidget = Container(
           color: theme.colorScheme.background,
-          child: WeatherInfoList(_weatherList[_code]!)
+          child: WeatherInfoList(weatherInfoList: _weatherList[code]!)
       );
     } else {
       listWidget = FutureBuilder<List<WeatherViewModel>>(
@@ -103,21 +115,25 @@ class _TownPageState extends State<TownPage>
           // 화면
           late Widget result;
 
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data != null) {
+            // 데이터 정상 조회
+
             // 데이터 저장
-            _weatherList[_code] = snapshot.data!;
+            _weatherList[code] = snapshot.data!;
             result = Container(
                 color: theme.colorScheme.background,
-                child: WeatherInfoList(snapshot.data!)
+                child: WeatherInfoList(weatherInfoList: snapshot.data!)
             );
           } else if (snapshot.hasError) {
+            // 에러발생
+
             result = Center(
               child: Column(
                 children: [
                   const Text('다시 시도해주세요.'),
                   TextButton(
                     onPressed: () {
-                      initWidgetState();
+                      _initWidgetState();
                       setState((){});
                     },
                     child: const Text('Refresh'),
@@ -126,6 +142,8 @@ class _TownPageState extends State<TownPage>
               ),
             );
           } else {
+            // 작업 진행중
+
             result = const Center(child: CircularProgressIndicator(),);
           }
 
@@ -137,9 +155,9 @@ class _TownPageState extends State<TownPage>
     return Column(
         children: [
           TownList(
-            selectedTownCode: _code,
-            clickHandler: (String code) { setState(() { _code = code; }); },
-            openModalHandler: openTownSelectModal,
+            selectedTownCode: _townInfo?.code ?? '',
+            clickHandler: (TownModel townInfo) { setState(() { _townInfo = townInfo; }); },
+            openModalHandler: _openTownSelectModal,
           ),
           Expanded(
             child: listWidget,
