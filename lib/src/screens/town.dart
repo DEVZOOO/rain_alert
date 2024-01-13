@@ -97,7 +97,7 @@ class _TownPageState extends State<TownPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     late Widget listWidget;
 
@@ -118,10 +118,7 @@ class _TownPageState extends State<TownPage>
 
             // 데이터 저장
             _weatherList[code] = snapshot.data!;
-            result = Container(
-                // color: theme.colorScheme.background,
-                child: WeatherInfoList(weatherInfoList: snapshot.data!)
-            );
+            result = WeatherInfoList(weatherInfoList: snapshot.data!);
           } else if (snapshot.hasError) {
             // 에러발생
 
