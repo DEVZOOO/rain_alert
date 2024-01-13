@@ -16,15 +16,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rain Alert',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
-        useMaterial3: true,
-      ),
-      home: ChangeNotifierProvider(
-        create: (context) => StorageTownProvider(),
-        child: const MyHomePage(title: '레인알럿 - 비알리미'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<StorageTownProvider>(create: (_) => StorageTownProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Rain Alert',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: '레인알럿 - 비알리미'),
       ),
     );
   }
@@ -44,7 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // 네비게이션 인덱스
 
   // 페이지들
-  final List<Widget> _pages = [LocationPage(), TownPage(), InfoPage()];
+  final List<Widget> _pages = [
+    // LocationPage(),
+    TownPage(),
+    InfoPage(),
+  ];
+
   final pageController = PageController();
 
   // 페이지변경
@@ -76,12 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
               pageController.jumpToPage(index);
             },
             destinations: const [
+              /*
               NavigationDestination(
                 icon: Badge(
                   child: Icon(Icons.location_history)
                 ),
                 label: '내위치'
               ),
+              */
               NavigationDestination(icon: Icon(Icons.location_on), label: '우리동네'),
               NavigationDestination(icon: Icon(Icons.info_outline), label: '버전정보'),
             ],
