@@ -11,15 +11,11 @@ class TownName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith((states) => _isSelect ? theme.colorScheme.primaryContainer : theme.colorScheme.background)
-      ),
+    return _isSelect ? FilledButton(
       onPressed: _clickHandler,
       child: Text(_text),
-    );
+    )
+    : FilledButton.tonal(onPressed: _clickHandler, child: Text(_text));
 
     /*
     return Padding(

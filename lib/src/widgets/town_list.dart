@@ -106,10 +106,6 @@ class TownList extends StatelessWidget {
           // 추가버튼
           TextButton(
             onPressed: _openModalHandler,
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith((states) => theme.colorScheme.secondaryContainer),
-              textStyle: MaterialStateProperty.resolveWith((states) => TextStyle(color: theme.colorScheme.secondary)),
-            ),
             child: const Text('추가'),
           ),
         ],

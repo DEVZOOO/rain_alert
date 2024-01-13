@@ -63,15 +63,16 @@ class _TownPageState extends State<TownPage>
 
   /// 날씨리스트 API 조회
   Future<List<WeatherViewModel>> _getWeatherList() async {
-      //*
-      List<WeatherViewModel> list = await Future.delayed(const Duration(seconds: 5), () {
-        return [
-          WeatherViewModel(date: '20240109', time: '1000'),
-        ];
-      });
-      //*/
-      // List<WeatherViewModel> list = await _townController.getWeatherList(_townInfo);
-      return list;
+    // TEST 데이터
+    /*
+    List<WeatherViewModel> list = await Future.delayed(const Duration(seconds: 5), () {
+      return [
+        WeatherViewModel(date: '20240109', time: '1000'),
+      ];
+    });
+    */
+    List<WeatherViewModel> list = await _townController.getWeatherList(_townInfo);
+    return list;
   }
 
   /// 지역 추가 handler, 추가 모달 오픈
@@ -104,10 +105,7 @@ class _TownPageState extends State<TownPage>
 
     // 최초 실행일때만 API call
     if (_weatherList.containsKey(code)) {
-      listWidget = Container(
-          color: theme.colorScheme.background,
-          child: WeatherInfoList(weatherInfoList: _weatherList[code]!)
-      );
+      listWidget = WeatherInfoList(weatherInfoList: _weatherList[code]!);
     } else {
       listWidget = FutureBuilder<List<WeatherViewModel>>(
         future: _getWeatherList(),
@@ -121,7 +119,7 @@ class _TownPageState extends State<TownPage>
             // 데이터 저장
             _weatherList[code] = snapshot.data!;
             result = Container(
-                color: theme.colorScheme.background,
+                // color: theme.colorScheme.background,
                 child: WeatherInfoList(weatherInfoList: snapshot.data!)
             );
           } else if (snapshot.hasError) {

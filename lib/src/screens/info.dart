@@ -34,19 +34,24 @@ class InfoPage extends StatelessWidget {
           env.name,
           style: theme.textTheme.titleMedium,
         ),
-        const SizedBox(width: 0, height: 20),
+
+        const SizedBox(width: 0, height: 10),
+
         Text('v${env.version}'),
+
+        const SizedBox(width: 0, height: 20),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
+            FilledButton.tonal(
               onPressed: _sendEmailHandler,
-              child: Text('의견')
+              child: const Text('의견보내기')
             ),
             const SizedBox(width: 15, height: 0),
-            TextButton(
+            FilledButton.tonal(
               onPressed: _githubBtnClickHandler,
-              child: Text('Github')
+              child: const Text('Github')
             ),
           ],
         ),
