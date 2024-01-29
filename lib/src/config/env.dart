@@ -11,6 +11,14 @@ class EnvConfig {
   /// github 링크
   final String githubUrl = dotenv.get('GITHUB_URL');
 
+  /// local storage key
+  final String localStorageKey = dotenv.get("LOCAL_STORAGE_KEY");
+
+  final String dbSchema = dotenv.get("DB_SCHEMA");
+
+  /// Custom REST API url
+  final String utilsApiUrl = dotenv.get("UTILS_API_URL");
+
   /// 기상청 ApiKey
   final String weatherApiKey = dotenv.get('WEATHER_API_KEY');
   /// 기상청 Api URL
