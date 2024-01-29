@@ -46,6 +46,7 @@ class _TownPageState extends State<TownPage>
     // final List<TownModel> townList = context.watch<StorageTownProvider>().townList;
     // _townInfo = townList.isEmpty ? null : townList[0];
 
+    /*
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       List<TownModel> list = context.read<StorageTownProvider>().townList;
       if (list.isNotEmpty) {
@@ -54,6 +55,16 @@ class _TownPageState extends State<TownPage>
         });
       }
     });
+    */
+
+    (() async {
+      List<TownModel> list = context.read<StorageTownProvider>().townList;
+      if (list.isNotEmpty) {
+        setState(() {
+           _townInfo = list[0];
+        });
+      }
+    })();
 
     // level1 초기화
     _townController.getTownList(1, null).then((value) => _topLevelTownList = value);
@@ -137,7 +148,7 @@ class _TownPageState extends State<TownPage>
               ),
             );
           } else {
-            // 작업 진행중
+            // loading
 
             result = const Center(child: CircularProgressIndicator(),);
           }
