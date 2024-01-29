@@ -1,16 +1,15 @@
 import '/src/models/import.dart';
-import '/src/repositories/import.dart';
 import '/src/api/import.dart';
 
 /// 우리동네 관련 service
 class TownService {
 
+  final UtilsApi _utilsApi = UtilsApi();
   final WeatherApi _weatherApi = WeatherApi();
-  final TownInfoRepository _townInfoRepository = TownInfoRepository();
 
   /// 지역 데이터 조회
   Future<List<TownModel>> getTownList(int level, String? parentCode) async {
-    return _townInfoRepository.getTownInfoList(level, parentCode);
+    return _utilsApi.getTownInfoList(level, parentCode);
   }
 
   /*
