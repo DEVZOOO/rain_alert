@@ -24,9 +24,15 @@ class _TownSelectState extends State<TownSelect> {
   // List<TownModel> _townListDept3 = [];
 
   /// dept1 code
+  /*
   TownModel? _town1Code; // 앞의 두자리 - 뒤에 0 삭제하고 code like '{num}%'
   TownModel? _town2Code; // 앞의 네자리
   TownModel? _town3Code;
+  */
+
+  String? _town1Code; // 앞의 두자리 - 뒤에 0 삭제하고 code like '{num}%'
+  String? _town2Code; // 앞의 네자리
+  String? _town3Code;
 
   /// 선택한 지역 정보
   late TownModel _townInfo;
@@ -55,18 +61,27 @@ class _TownSelectState extends State<TownSelect> {
           padding: const EdgeInsets.symmetric(horizontal: 50),
           child: Column(
             children: [
-              DropdownButton<TownModel>(
+              DropdownButton<String>(
                 itemHeight: 50,
                 value: _town1Code,
                 // TODO - 이미 있는거 보여주지 않기
-                items: widget._townListDept1.map((e) => DropdownMenuItem(value: e, child: Text(e.level1),)).toList(),
+                items: widget._townListDept1.map((e) => DropdownMenuItem(value: e.code, child: Text(e.level1),)).toList(),
                 hint: const Text('선택하세요'),
                 isExpanded: true,
+                /*
                 onChanged: (TownModel? townInfo) {
                   setState(() {
                     _town1Code = townInfo;
                     _town2Code = null;
                     _townInfo = townInfo!;
+                  });
+                },
+                */
+                onChanged: (String? code) {
+                  setState(() {
+                    _town1Code = code;
+                    _town2Code = null;
+                    _townInfo = widget._townListDept1.firstWhere((v) => v.code == code);
                   });
                 },
               ),
@@ -75,22 +90,31 @@ class _TownSelectState extends State<TownSelect> {
           
               // level 2
               FutureBuilder(
-                future: townService.getTownList(2, _town1Code?.code),
+                future: townService.getTownList(2, _town1Code),
                 builder: (context, snapshot) {
                   late Widget result;
                   if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     List<TownModel> list = snapshot.data!;
 
-                    result = DropdownButton<TownModel>(
+                    result = DropdownButton<String>(
                       value: _town2Code,
                       itemHeight: 50,
                       // TODO - 이미 있는거 보여주지 않기
-                      items: list.map((e) => DropdownMenuItem(value: e, child: Text(e.level2 ?? ''),)).toList(),
+                      items: list.map((e) => DropdownMenuItem(value: e.code, child: Text(e.level2 ?? ''),)).toList(),
+                      hint: const Text('선택하세요'),
                       isExpanded: true,
+                      /*
                       onChanged: (TownModel? townInfo) {
                         setState(() {
                           _town2Code = townInfo;
                           _townInfo = townInfo!;
+                        });
+                      },
+                      */
+                      onChanged: (String? code) {
+                        setState(() {
+                          _town2Code = code;
+                          _townInfo = list.firstWhere((element) => element.code == code);
                         });
                       },
                     );
@@ -112,7 +136,7 @@ class _TownSelectState extends State<TownSelect> {
               
               // level 3
               FutureBuilder(
-                future: townService.getTownList(3, _town2Code?.code),
+                future: townService.getTownList(3, _town2Code),
                 builder: (context, snapshot) {
                   late Widget result;
                   if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -130,16 +154,25 @@ class _TownSelectState extends State<TownSelect> {
                     );
                     */
 
-                    result = DropdownButton<TownModel>(
+                    result = DropdownButton<String>(
                       value: _town3Code,
                       itemHeight: 50,
                       // TODO - 이미 있는거 보여주지 않기
-                      items: list.map((e) => DropdownMenuItem(value: e, child: Text(e.level3 ?? ''),)).toList(),
+                      items: list.map((e) => DropdownMenuItem(value: e.code, child: Text(e.level3 ?? ''),)).toList(),
+                      hint: const Text('선택하세요'),
                       isExpanded: true,
+                      /*
                       onChanged: (TownModel? townInfo) {
                         setState(() {
                           _town3Code = townInfo;
                           _townInfo = townInfo!;
+                        });
+                      },
+                      */
+                      onChanged: (String? code) {
+                        setState(() {
+                          _town3Code = code;
+                          _townInfo = list.firstWhere((element) => element.code == code);
                         });
                       },
                     );
