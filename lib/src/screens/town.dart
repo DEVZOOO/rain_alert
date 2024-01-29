@@ -88,6 +88,7 @@ class _TownPageState extends State<TownPage>
 
   /// 지역 추가 handler, 추가 모달 오픈
   void _openTownSelectModal() {
+    /*
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -101,6 +102,24 @@ class _TownPageState extends State<TownPage>
           ),
         );
       },
+    );
+    */
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("우리동네 추가"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TownSelect(townListDept1: _topLevelTownList,),
+            ],
+          ),
+        );
+      }
     );
   }
 
