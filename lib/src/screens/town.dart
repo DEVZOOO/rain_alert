@@ -146,9 +146,14 @@ class _TownPageState extends State<TownPage>
           if (snapshot.hasData && snapshot.data != null) {
             // 데이터 정상 조회
 
-            // 데이터 저장
-            _weatherList[code] = snapshot.data!;
-            result = WeatherInfoList(weatherInfoList: snapshot.data!);
+            if (snapshot.data!.isEmpty) {
+              result = const Text('데이터 없음');
+            } else {
+              // 데이터 저장
+              _weatherList[code] = snapshot.data!;
+              result = WeatherInfoList(weatherInfoList: snapshot.data!);
+            }
+
           } else if (snapshot.hasError) {
             // 에러발생
 
