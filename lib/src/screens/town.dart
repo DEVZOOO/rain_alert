@@ -18,9 +18,6 @@ class _TownPageState extends State<TownPage>
   with AutomaticKeepAliveClientMixin {  // 상태값 유지
 
   final TownController _townController = TownController();
-  
-  /// 선택한 지역정보
-  TownModel? _townInfo;
 
   /// 최상위 지역 목록(시,도)
   late List<TownModel> _topLevelTownList;
@@ -42,9 +39,7 @@ class _TownPageState extends State<TownPage>
   }
 
   /// widget state 초기화 작업
-  void _initWidgetState() {
-    // final List<TownModel> townList = context.watch<StorageTownProvider>().townList;
-    // _townInfo = townList.isEmpty ? null : townList[0];
+  void _initWidgetState() async {
 
     /*
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -57,14 +52,11 @@ class _TownPageState extends State<TownPage>
     });
     */
 
-    (() async {
-      List<TownModel> list = context.read<StorageTownProvider>().townList;
+    var selectTownProvider = context.read<SelectTownProvider>();
+    List<TownModel> list = context.read<StorageTownProvider>().townList;
       if (list.isNotEmpty) {
-        setState(() {
-           _townInfo = list[0];
-        });
+        selectTownProvider.changeCode(list[0].code);
       }
-    })();
 
     // level1 초기화
     _townController.getTownList(1, null).then((value) => _topLevelTownList = value);
@@ -82,11 +74,20 @@ class _TownPageState extends State<TownPage>
       ];
     });
     */
-    List<WeatherViewModel> list = await _townController.getWeatherList(_townInfo);
+    SelectTownProvider selectTownProvider = context.read<SelectTownProvider>();
+    List<TownModel> townList = context.read<StorageTownProvider>().townList;
+
+    List<WeatherViewModel> list = [];
+
+    if (selectTownProvider.code != '') {
+      TownModel model = townList.firstWhere((element) => element.code == selectTownProvider.code);
+      list = await _townController.getWeatherList(model);
+    }
+    
     return list;
   }
 
-  /// 지역 추가 handler, 추가 모달 오픈
+  /// 우리동네 추가 handler, 추가 모달 오픈
   void _openTownSelectModal() {
     /*
     showModalBottomSheet(
@@ -127,11 +128,10 @@ class _TownPageState extends State<TownPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    // final theme = Theme.of(context);
+    var selectTownProvider = context.watch<SelectTownProvider>();
 
     late Widget listWidget;
-
-    String code = _townInfo != null ? _townInfo!.code : '';
+    String code = selectTownProvider.code;
 
     // 최초 실행일때만 API call
     if (_weatherList.containsKey(code)) {
@@ -183,16 +183,19 @@ class _TownPageState extends State<TownPage>
     }
 
     return Column(
-        children: [
-          TownList(
-            selectedTownCode: _townInfo?.code ?? '',
-            clickHandler: (TownModel townInfo) { setState(() { _townInfo = townInfo; }); },
-            openModalHandler: _openTownSelectModal,
-          ),
-          Expanded(
-            child: listWidget,
-          ),
-        ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TownList(
+          selectedTownCode: selectTownProvider.code,
+          clickHandler: (String code) {
+            selectTownProvider.changeCode(code);
+          },
+          openModalHandler: _openTownSelectModal,
+        ),
+        Expanded(
+          child: listWidget,
+        ),
+      ],
     );
   }
 }

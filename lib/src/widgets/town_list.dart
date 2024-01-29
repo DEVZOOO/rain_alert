@@ -8,25 +8,23 @@ import '/src/providers/import.dart';
 
 /// 동네리스트
 class TownList extends StatelessWidget {
-  const TownList({super.key, required selectedTownCode, required clickHandler, required openModalHandler})
+  const TownList({
+    super.key,
+    required selectedTownCode,
+    required clickHandler,
+    required openModalHandler,
+    })
     : _selectedTownCode = selectedTownCode
     , _clickHandler = clickHandler
-    , _openModalHandler = openModalHandler;
+    , _openModalHandler = openModalHandler
+  ;
 
   final String _selectedTownCode;
-  final Function(TownModel) _clickHandler;
+  final Function(String) _clickHandler;
   final Function() _openModalHandler;
-
-  // TODO - 사용자가 저장한 위치
-  // late List<TownModel> _townList;
-  // late StorageTownProvider _townProvider;
 
   @override
   Widget build(BuildContext context) {
-    // _townProvider = Provider.of<StorageTownProvider>(context);
-    // _townList = _townProvider.townList;
-
-    final theme = Theme.of(context);
 
     /*
     Widget widget;
@@ -73,11 +71,20 @@ class TownList extends StatelessWidget {
                     children.add(const SizedBox(width: 10, height: 1,));
                   }
 
+                  List<String> title = [item.level1];
+                  if (item.level2 != null) {
+                    title.add(item.level2!);
+                  }
+                  if (item.level3 != null) {
+                    title.add(item.level3!);
+                  }
+
                   children.add(
                       TownName(
-                          [item.level1, item.level2, item.level3].join(' '),
-                          item.code == _selectedTownCode,
-                          () => _clickHandler.call(item),
+                        title.join(' '),
+                        len == 1 && _selectedTownCode == '' ? true : item.code == _selectedTownCode,
+                        () => _clickHandler.call(item.code),
+                        () {}
                       )
                   );
 
@@ -93,6 +100,7 @@ class TownList extends StatelessWidget {
                       () => _clickHandler.call(item.code)
                     )).toList(),
                      */
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: children,
                   ),
                 );
