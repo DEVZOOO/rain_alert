@@ -25,6 +25,7 @@ class TownList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SelectTownProvider selectTownProvider = context.watch<SelectTownProvider>();
 
     /*
     Widget widget;
@@ -84,7 +85,39 @@ class TownList extends StatelessWidget {
                         title.join(' '),
                         len == 1 && _selectedTownCode == '' ? true : item.code == _selectedTownCode,
                         () => _clickHandler.call(item.code),
-                        () {}
+                        () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("우리동네 삭제"),
+                                content: const Text("우리동네를 삭제하시겠어요?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("No"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      String code = item.code;
+                                      
+                                      List<TownModel> list = townProvider.townList;
+                                      int idx = list.indexWhere((element) => element.code == code);
+                                      // 마지막일경우, 첫번째이면 삭제후 다음 인덱스 선택, 
+                                      String nextCode = list.length == 1 ? '' : list[idx == 0 ? 1 : idx - 1].code;
+
+                                      townProvider.deleteTownViaCode(code);
+                                      Navigator.pop(context);
+
+                                      selectTownProvider.changeCode(nextCode);
+                                    },
+                                    child: const Text("Yes"),
+                                  )
+                                ],
+                              );
+                            }
+                          );
+                        }
                       )
                   );
 
