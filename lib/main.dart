@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<StorageTownProvider>(create: (_) => StorageTownProvider()),
+        ChangeNotifierProvider<SelectTownProvider>(create: (_) => SelectTownProvider()),
       ],
       child: MaterialApp(
         title: 'Rain Alert',
