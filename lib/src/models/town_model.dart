@@ -1,44 +1,25 @@
 /// 지역정보
 class TownModel {
-  /// 행정구역코드
-  final String code;
+  final String code, level1, level2, level3;
+  final int level, x, y;
 
-  /// 1dept
-  final String level1;
-  /// 2dept
-  final String? level2;
-  /// 3dept
-  final String? level3;
+  TownModel.fromJson(Map<String, dynamic> json)
+      : code = json['code'],
+        level1 = json['level1'],
+        level2 = json['level2'] ?? '',
+        level3 = json['level3'] ?? '',
+        level = json['level'],
+        x = json['x'],
+        y = json['y'];
 
-  final int level;
+  /// 지역명 조회 (A도/시 B군/구 C읍/면/동)
+  String get townName => [
+        for (final i in [level1, level2, level3])
+          if (i != '') i,
+      ].join(' ');
 
-  /// nx
-  final int x;
-  /// ny
-  final int y;
-
-  TownModel({
-    required this.code,
-    required this.level1,
-    this.level2,
-    this.level3,
-    required this.level,
-    required this.x,
-    required this.y,
-  });
-
-  /// Map to Model
-  factory TownModel.fromJson(Map<String, dynamic> json) {
-    TownModel model = TownModel(
-      code: json["code"]!,
-      level1: json["level1"]!,
-      level2: json["level2"],
-      level3: json["level3"],
-      level: json["level"]!,
-      x: json["x"]!,
-      y: json["y"]!,
-    );
-    return model;
+  @override
+  String toString() {
+    return 'code: $code, level1: $level1, level2: $level2, level3: $level3, level: $level, x: $x, y: $y';
   }
-
 }
